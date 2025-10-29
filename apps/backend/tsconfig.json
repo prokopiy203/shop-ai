@@ -1,0 +1,30 @@
+{
+  "extends": "@repo/typescript-config/base.json",
+  "compilerOptions": {
+    /* ===== Основне ===== */
+    "target": "ES2020", // сучасний синтаксис, підтримується Node 18+
+    "module": "CommonJS", // для Express / Node
+    "rootDir": "src", // вихідна директорія з усім кодом
+    "outDir": "dist", // компільований код
+    "moduleResolution": "node",
+    "esModuleInterop": true, // дозволяє import з CommonJS
+    "resolveJsonModule": true, // можна імпортувати .json файли
+    "baseUrl": "./src", // базова точка для alias
+    "paths": {
+      "@/*": ["*"], // імпорти типу "@/controllers/auth"
+      "@types/*": ["../shared/types/*"] // якщо є спільні типи у монорепо
+    },
+
+    /* ===== Перевірки якості ===== */
+    "strict": true, // вмикає всі строгі перевірки
+    "noImplicitAny": true, // не дозволяє неявний any
+    "forceConsistentCasingInFileNames": true,
+    "skipLibCheck": true,
+
+    /* ===== Інше ===== */
+    "allowSyntheticDefaultImports": true,
+    "isolatedModules": false
+  },
+  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+  "exclude": ["node_modules", "dist"]
+}
