@@ -14,22 +14,31 @@ const PORT = Number(getEnvVar('PORT', 4000));
 const COOKIE_SECRET = String(getEnvVar('COOKIE_SECRET'));
 const NODE_ENV = getEnvVar('NODE_ENV', 'development');
 
-const app = express();
+export const startServer = () => {
+  const app = express();
 
-app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
+  app.use(
+    express.json({
+      type: ['application/json', 'application/vnd.api+json'],
+      limit: '5mb',
+    }),
+  );
 
-app.use(cors(corsOptions));
+  app.use(helmet.crossOriginResourcePolicy({ policy: 'cross-origin' }));
 
-app.use(cookieParser(COOKIE_SECRET));
+  app.use(cors(corsOptions));
 
-app.use(limiter);
+  app.use(cookieParser(COOKIE_SECRET));
 
-app.use(morgan(isProd ? 'combined' : 'dev'));
+  app.use(limiter);
 
-app.use(compression());
+  app.use(morgan(isProd ? 'combined' : 'dev'));
 
-app.use(errorHandler);
+  app.use(compression());
 
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
-});
+  app.use(errorHandler);
+
+  app.listen(PORT, () => {
+    console.log(`Server is running on port ${PORT}!`);
+  });
+};

@@ -2,7 +2,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-export function getEnvVar<T extends string | number | boolean>(name: string, defaultValue?: T): T {
+export function getEnvVar<T extends string | number | boolean>(
+  name: string,
+  defaultValue?: T,
+): T | undefined {
   const value = process.env[name];
 
   if (value && value.trim() !== '') return value as T;
