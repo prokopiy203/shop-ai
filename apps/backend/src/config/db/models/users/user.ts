@@ -1,4 +1,4 @@
-import { Schema, model } from 'mongoose';
+import { Schema, model, models } from 'mongoose';
 
 interface IUser {
   name: string;
@@ -7,6 +7,7 @@ interface IUser {
   phone?: string;
   avatarUrl?: string;
   role: 'user' | 'admin';
+  addresses: [];
   preferences?: Record<string, any>;
   toJSON(): Omit<IUser, 'password'>;
 }
@@ -19,6 +20,12 @@ const userSchema = new Schema<IUser>(
     password: { type: String, required: true },
     avatarUrl: String,
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
+    addresses: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Address',
+      },
+    ],
     preferences: {
       theme: { type: String, enum: ['light', 'dark'], default: 'light' },
       language: { type: String, enum: ['uk', 'en'], default: 'uk' },
@@ -34,4 +41,4 @@ userSchema.methods.toJSON = function (): Omit<IUser, 'password'> {
   return obj;
 };
 
-export const UserCollection = model('User', userSchema);
+export const User = models.User || model('User', userSchema);
