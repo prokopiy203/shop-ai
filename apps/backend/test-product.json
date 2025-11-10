@@ -1,0 +1,13 @@
+{
+  "title": "iPhone 15 Pro Max",
+  "description": "Найпотужніший iPhone з титановим корпусом, чипом A17 Pro та камерою ProRAW",
+  "price": 1299.99,
+  "category": "507f1f77bcf86cd799439011",
+  "stock": 25,
+  "tags": ["smartphone", "apple", "premium", "5g"],
+  "images": [
+    "https://example.com/images/iphone-15-pro-max-1.jpg",
+    "https://example.com/images/iphone-15-pro-max-2.jpg"
+  ]
+}
+

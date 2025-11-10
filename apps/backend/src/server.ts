@@ -9,6 +9,7 @@ import morgan from 'morgan';
 import { isProd } from './config/environment';
 import { limiter } from './config/rateLimit';
 import { errorHandler } from './errors';
+import globalRoutes from './routes/globalRoute';
 
 const PORT = Number(getEnvVar('PORT', 4000));
 const COOKIE_SECRET = String(getEnvVar('COOKIE_SECRET'));
@@ -35,6 +36,8 @@ export const startServer = () => {
   app.use(morgan(isProd ? 'combined' : 'dev'));
 
   app.use(compression());
+
+  app.use('/api', globalRoutes);
 
   app.use(errorHandler);
 
