@@ -1,6 +1,11 @@
-import { Schema, models, model } from 'mongoose';
+import { Category as CategoryCore } from '@shopai/types';
+import { Schema, models, model, type Document, type Model } from 'mongoose';
 
-const categorySchema = new Schema(
+export interface ICategoryDoc extends Document, Omit<CategoryCore, 'id'> {
+  _id: any;
+}
+
+const categorySchema = new Schema<ICategoryDoc>(
   {
     name: {
       type: String,
@@ -42,4 +47,5 @@ const categorySchema = new Schema(
   { timestamps: true, versionKey: false },
 );
 
-export const Category = models.Category || model('Category', categorySchema);
+export const Category: Model<ICategoryDoc> =
+  (models.Category as Model<ICategoryDoc>) || model<ICategoryDoc>('Category', categorySchema);

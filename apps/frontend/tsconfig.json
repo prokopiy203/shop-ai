@@ -5,7 +5,10 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "paths": {
+      "@shopai/types": ["../../packages/shared/types"]
+    }
   },
   "include": [
     "**/*.ts",

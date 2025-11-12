@@ -12,7 +12,7 @@
     "baseUrl": "./src", // базова точка для alias
     "paths": {
       "@/*": ["*"], // імпорти типу "@/controllers/auth"
-      "@types/*": ["../shared/types/*"] // якщо є спільні типи у монорепо
+      "@shopai/types": ["../../packages/shared/types"]
     },
 
     /* ===== Перевірки якості ===== */

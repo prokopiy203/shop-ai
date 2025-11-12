@@ -1,6 +1,11 @@
-import { Schema, model, models } from 'mongoose';
+import { Schema, model, models, type Model, type Document } from 'mongoose';
+import { Product as ProductCore } from '@shopai/types';
 
-const productSchema = new Schema(
+export interface IProductDoc extends Document, Omit<ProductCore, '_id'> {
+  _id: any;
+}
+
+const productSchema = new Schema<IProductDoc>(
   {
     title: { type: String, required: true },
     slug: {
@@ -38,4 +43,5 @@ const productSchema = new Schema(
   { timestamps: true, versionKey: false },
 );
 
-export const Product = models.Product || model('Product', productSchema);
+export const Product: Model<IProductDoc> =
+  (models.Product as Model<IProductDoc>) || model<IProductDoc>('Product', productSchema);

@@ -1,62 +1,63 @@
-import { Product } from '../config/db/models';
+import { buildProductQuery } from '../utils/buildProductQuery';
+import { Category, Product } from '../config/db/models';
 import { ValidationError } from '../errors/AppError';
+import type { CreateProductData, PaginationParams, ProductResponse } from '@shopai/types';
+import { HttpError } from 'http-errors-enhanced';
+import { generateSlug } from '@/utils/generateSlug';
 
-interface CreateProductData {
-  title: string;
-  description?: string;
-  price: number;
-  category: string;
-  stock?: number;
-  tags?: string[];
-  images?: string[];
-}
+export const createProductService = async (data: CreateProductData) => {
+  const slug = generateSlug(data.title);
 
-/**
- * Генерує slug з title
- */
-const generateSlug = (title: string): string => {
-  return title
-    .toLowerCase()
-    .trim()
-    .replace(/[^\w\s-]/g, '') // Видаляємо спецсимволи
-    .replace(/[\s_-]+/g, '-') // Замінюємо пробіли та підкреслення на дефіси
-    .replace(/^-+|-+$/g, ''); // Видаляємо дефіси на початку та в кінці
+  const existing = await Product.findOne({ slug });
+
+  if (existing) {
+    throw new ValidationError('Product with title already exists.Please use a different title.', {
+      code: 'DUPLICATE_SLUG',
+      details: [{ field: 'title', value: data.title }],
+    });
+  }
+
+  const product = await new Product({
+    title: data.title,
+    slug,
+    description: data.description || '',
+    price: data.price,
+    images: data.images || [],
+    category: data.category,
+    stock: data.stock ?? 0,
+    tags: data.tags || [],
+  });
+
+  await product.save();
+
+  return product;
 };
 
-/**
- * Створює новий продукт
- */
-export const createProduct = async (data: CreateProductData) => {
-  try {
-    const slug = generateSlug(data.title);
+export const getAllProducts = async (
+  query: Record<string, any> = {},
+  { page = 1, limit = 10, sortBy = 'createdAt', sortOrder = 'desc' }: PaginationParams = {},
+): Promise<{ products: ProductResponse[]; total: number; page: number; pages: number }> => {
+  const skip = (page - 1) * limit;
 
-    const product = new Product({
-      title: data.title,
-      slug,
-      description: data.description || '',
-      price: data.price,
-      images: data.images || [],
-      category: data.category,
-      stock: data.stock ?? 0,
-      tags: data.tags || [],
-    });
+  const sort: Record<string, 1 | -1> = {
+    [sortBy]: sortOrder === 'asc' ? 1 : -1,
+  };
 
-    await product.save();
+  const mongoQuery = buildProductQuery(query);
 
-    return product;
-  } catch (error: any) {
-    // Обробка помилки дублікату slug (MongoDB error code 11000)
-    if (error.code === 11000) {
-      throw new ValidationError(
-        'Product with this title already exists. Please use a different title.',
-        {
-          code: 'DUPLICATE_SLUG',
-          details: { field: 'title' },
-        },
-      );
-    }
+  const [products, total] = await Promise.all([
+    Product.find(mongoQuery).skip(skip).limit(limit).sort(sort),
+    Product.countDocuments(mongoQuery),
+  ]);
 
-    // Перекидаємо інші помилки далі
-    throw error;
+  if (products.length === 0) {
+    throw new HttpError(401, 'Not found products');
   }
+
+  return {
+    products,
+    total,
+    page,
+    pages: Math.ceil(total / limit),
+  };
 };

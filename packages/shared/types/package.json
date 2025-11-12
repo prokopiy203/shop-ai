@@ -1,0 +1,24 @@
+{
+  "name": "@shopai/types",
+  "version": "1.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "exports": {
+    ".": "./index.ts",
+    "./products": "./products.ts",
+    "./categories": "./categories.ts",
+    "./orders": "./orders.ts",
+    "./cart": "./cart.ts",
+    "./users": "./users.ts",
+    "./common": "./common.ts"
+  },
+  "type": "module",
+  "scripts": {
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "*",
+    "typescript": "5.9.2"
+  }
+}
