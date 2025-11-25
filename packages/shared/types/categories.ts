@@ -15,6 +15,7 @@ export interface CreateCategoryData {
 export interface UpdateCategoryData {
   name?: string;
   description?: string;
+  slug?: string;
   imageUrl?: string;
   parentCategory?: string | null;
   aiTags?: string[];
@@ -50,4 +51,3 @@ export interface CategoryResponse {
   createdAt: string;
   updatedAt: string;
 }
-

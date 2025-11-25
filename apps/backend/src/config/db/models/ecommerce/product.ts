@@ -36,9 +36,11 @@ const productSchema = new Schema<IProductDoc>(
     },
     vector: {
       type: [Number],
-      index: 'vectorSearch',
       default: [],
+      select: false,
     },
+    deleted: { type: Boolean, default: false },
+    deletedAt: { type: Date, default: null },
   },
   { timestamps: true, versionKey: false },
 );

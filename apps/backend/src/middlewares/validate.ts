@@ -1,33 +1,27 @@
-import { Request, Response, NextFunction } from 'express';
-import { Schema } from 'joi';
+import { NextFunction, Request, Response } from 'express';
+import { z, ZodError } from 'zod';
 import { ValidationError } from '../errors/AppError';
 
-/**
- * Middleware для валідації даних через Joi схему
- */
-export const validate = (schema: Schema) => {
+export const validate = (schema: z.Schema) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const { error, value } = schema.validate(req.body, {
-      abortEarly: false,
-      stripUnknown: true,
-    });
+    try {
+      const parsed = schema.parse(req.body);
+      req.body = parsed;
+      next();
+    } catch (err: any) {
+      if (err instanceof ZodError) {
+        return next(
+          new ValidationError('Validation error', {
+            code: 'VALIDATION_ERROR',
+            details: err.issues.map((issue) => ({
+              field: issue.path.join('.'),
+              message: issue.message,
+            })),
+          }),
+        );
+      }
 
-    if (error) {
-      const errorMessages = error.details.map((detail) => detail.message).join(', ');
-      return next(
-        new ValidationError(errorMessages, {
-          code: 'VALIDATION_ERROR',
-          details: error.details.map((detail) => ({
-            field: detail.path.join('.'),
-            message: detail.message,
-          })),
-        }),
-      );
+      return next(err);
     }
-
-    // Замінюємо req.body на валідовані та очищені дані
-    req.body = value;
-    next();
   };
 };
-

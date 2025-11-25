@@ -1,12 +1,17 @@
 import { Request, Response } from 'express';
-import { createProductService, getAllProducts } from '../services/productService';
-import type { CreateProductData, ApiSuccessResponse } from '@shopai/types';
-import { limiter } from '@/config/rateLimit';
+import {
+  createProductService,
+  deletedProductService,
+  getAllProductsService,
+  getDeletedProductService,
+  restoreProductService,
+  softDeleteProductService,
+  updateProductService,
+} from '../services/productService';
+import type { CreateProductData, ApiSuccessResponse, UpdateProductData } from '@shopai/types';
+import { AppError } from '@/errors';
 
-/**
- * Контролер для створення продукту
- */
-export const createProduct = async (
+export const createProductController = async (
   req: Request<{}, ApiSuccessResponse, CreateProductData>,
   res: Response<ApiSuccessResponse>,
 ) => {
@@ -18,7 +23,7 @@ export const createProduct = async (
   });
 };
 
-export const getProduct = async (req: Request, res: Response) => {
+export const getProductController = async (req: Request, res: Response) => {
   const pagination = {
     page: Number(req.query.page) || 1,
     limit: Number(req.query.limit) || 10,
@@ -28,12 +33,82 @@ export const getProduct = async (req: Request, res: Response) => {
 
   const filters = { ...req.query };
 
-  const product = await getAllProducts(filters, pagination);
+  const product = await getAllProductsService(filters, pagination);
 
   console.log('Result from getAllProducts:', JSON.stringify(product, null, 2));
 
   res.status(201).json({
     message: 'Successfully get all Product',
     data: product,
+  });
+};
+
+export const updateProductController = async (
+  req: Request<{ id: string }, {}, UpdateProductData>,
+  res: Response,
+) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new AppError(400, 'Product ID is required', {
+      code: 'PRODUCT_ID_REQUIRED',
+      details: [{ field: 'id', message: 'Missing product ID in request params' }],
+    });
+  }
+
+  const updateProduct = await updateProductService(id, req.body);
+
+  res.status(200).json({
+    message: 'Product update successfully!',
+    data: updateProduct,
+  });
+};
+
+export const deleteProductController = async (req: Request<{ id: string }>, res: Response) => {
+  const { id } = req.params;
+
+  if (!id) {
+    throw new AppError(400, 'Product ID is required', {
+      code: 'PRODUCT_ID_REQUIRED',
+      details: [{ field: 'id' }],
+    });
+  }
+
+  const result = await deletedProductService(id);
+
+  res.status(200).json({
+    message: 'Product successfully deleted!',
+    data: result,
+  });
+};
+
+export const softDeleteProductController = async (req: Request<{ id: string }>, res: Response) => {
+  const { id } = req.params;
+
+  const result = await softDeleteProductService(id);
+
+  res.status(200).json({
+    message: result.alreadyDeleted ? 'Product already deleted' : 'Product successfully deleted',
+    data: result,
+  });
+};
+
+export const restoreProductController = async (req: Request<{ id: string }>, res: Response) => {
+  const { id } = req.params;
+
+  const result = await restoreProductService(id);
+
+  res.status(200).json({
+    message: result.restored ? 'Product successfully restored' : 'Product is not deleted',
+    data: result,
+  });
+};
+
+export const getDeletedProductsController = async (req: Request, res: Response) => {
+  const products = await getDeletedProductService();
+
+  res.status(200).json({
+    message: 'Deleted product list',
+    data: products,
   });
 };
