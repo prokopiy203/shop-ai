@@ -17,10 +17,9 @@ const productSchema = new Schema<IProductDoc>(
     },
     description: { type: String, default: '' },
     price: { type: Number, required: true },
-    images: {
-      type: [String],
-      default: [],
-    },
+    images: [{ type: Schema.Types.ObjectId, ref: 'Image' }],
+    gallery: [{ type: Schema.Types.ObjectId, ref: 'Image' }],
+    videos: [{ type: Schema.Types.ObjectId, ref: 'Video' }],
     category: {
       type: Schema.Types.ObjectId,
       ref: 'Category',
@@ -42,7 +41,20 @@ const productSchema = new Schema<IProductDoc>(
     deleted: { type: Boolean, default: false },
     deletedAt: { type: Date, default: null },
   },
-  { timestamps: true, versionKey: false },
+  {
+    timestamps: true,
+    versionKey: false,
+
+    toJSON: {
+      transform(doc, ret: any) {
+        delete ret.vector;
+        delete ret.deleted;
+        delete ret.deletedAt;
+
+        return ret;
+      },
+    },
+  },
 );
 
 export const Product: Model<IProductDoc> =

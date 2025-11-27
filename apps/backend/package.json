@@ -7,6 +7,7 @@
     "dev": "ts-node-dev --respawn --transpile-only -r tsconfig-paths/register src/app.ts",
     "build": "next build",
     "start": "next start",
+    "setup:cloudinary": "ts-node -r tsconfig-paths/register scripts/setup-cloudinary.ts",
     "lint": "eslint --max-warnings 0",
     "check-types": "next typegen && tsc --noEmit"
   },
@@ -43,7 +44,7 @@
     "@types/mongoose": "^5.11.96",
     "@types/morgan": "^1.9.10",
     "@types/multer": "^2.0.0",
-    "@types/node": "^22.18.13",
+    "@types/node": "^22.19.1",
     "@types/react": "19.1.0",
     "@types/react-dom": "19.1.1",
     "@typescript-eslint/eslint-plugin": "^8.46.2",
@@ -55,6 +56,7 @@
     "eslint-plugin-prettier": "^5.5.4",
     "eslint-plugin-promise": "^7.2.1",
     "prettier": "^3.6.2",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsconfig-paths": "^3.15.0",
     "typescript": "^5.9.2"

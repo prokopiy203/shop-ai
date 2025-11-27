@@ -21,14 +21,13 @@ export const createProductSchema = zod
       message: 'Category must be a valid ObjectId',
     }),
 
-    stock: zod.number().min(0, 'Stock must be greater than or equal to 0').optional().default(0),
+    stock: zod.number().min(0, 'Stock must be >= 0').optional().default(0),
 
     tags: zod.array(zod.string().trim()).optional().default([]),
 
-    images: zod
-      .array(zod.string().trim().url('All images must be valid URLs'))
-      .optional()
-      .default([]),
+    images: zod.never().optional(),
+    gallery: zod.never().optional(),
+    videos: zod.never().optional(),
   })
   .strict();
 

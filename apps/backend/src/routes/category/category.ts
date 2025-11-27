@@ -5,7 +5,7 @@ import {
   getCategoryByIdController,
   removeCategoriesController,
   updateCategoryController,
-} from '../controllers/category';
+} from '@/controllers/category/category';
 import { Router } from 'express';
 import { updateCategorySchema } from '@/validation/category';
 

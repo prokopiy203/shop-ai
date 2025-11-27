@@ -1,6 +1,6 @@
-import { buildProductQuery } from '../utils/buildProductQuery';
-import { Product } from '../config/db/models';
-import { AppError, ValidationError } from '../errors/AppError';
+import { buildProductQuery } from '../../utils/buildProductQuery';
+import { Product } from '../../config/db/models';
+import { AppError, ValidationError } from '../../errors/AppError';
 import type {
   CreateProductData,
   PaginationParams,
@@ -10,36 +10,44 @@ import type {
 import { HttpError } from 'http-errors-enhanced';
 import { generateSlug } from '@/utils/generateSlug';
 import { generateEmbedding } from '@/utils/generateEmbedding';
-import { da } from 'zod/v4/locales';
 
 export const createProductService = async (data: CreateProductData) => {
-  const slug = generateSlug(data.title);
+  const { title, description, price, category, stock = 0, tags = [] } = data;
 
-  const existing = await Product.findOne({ slug });
-  if (existing) {
-    throw new ValidationError('Product with title already exists.Please use a different title.', {
-      code: 'DUPLICATE_SLUG',
-      details: [{ field: 'title', value: data.title }],
-    });
+  const slug = generateSlug(title);
+
+  if (await Product.findOne({ slug })) {
+    throw new ValidationError(
+      'Product with this title already exists. Please use a different title.',
+      {
+        code: 'DUPLICATE_SLUG',
+        details: [{ field: 'title', value: title }],
+      },
+    );
   }
 
-  const cleanText = [data.title, data.description, ...(data.tags || [])].filter(Boolean).join(' ');
+  const cleanText = [title, description, ...tags].filter(Boolean).join(' ');
 
-  let vector: number[] = [];
-  try {
-    vector = await generateEmbedding(cleanText);
-  } catch (err) {
+  const vector = await generateEmbedding(cleanText).catch((err) => {
     console.error('Embedding generation failed:', err);
-    vector = [];
-  }
-
-  const product = await Product.create({
-    ...data,
-    slug,
-    vector,
+    return [];
   });
 
-  return product;
+  const createdProduct = await Product.create({
+    title,
+    slug,
+    description,
+    price,
+    category,
+    stock,
+    tags,
+    vector,
+    images: [],
+    gallery: [],
+    videos: [],
+  });
+
+  return createdProduct;
 };
 
 export const getAllProductsService = async (
@@ -59,6 +67,14 @@ export const getAllProductsService = async (
     Product.find(mongoQuery)
       .populate({ path: 'category', select: 'name slug description imageUrl' })
       .skip(skip)
+      .populate({
+        path: 'images',
+        select: 'thumbnail preview',
+      })
+      .populate({
+        path: 'videos',
+        select: 'url poster alt views',
+      })
       .limit(limit)
       .sort(sort),
     Product.countDocuments(mongoQuery),
@@ -166,50 +182,4 @@ export const deletedProductService = async (id: string) => {
   await Product.findByIdAndDelete(id);
 
   return { deleted: true, id };
-};
-
-export const softDeleteProductService = async (id: string) => {
-  const product = await Product.findById(id);
-
-  if (!product) {
-    throw new AppError(404, 'Product not found', {
-      code: 'PRODUCT_NOT_FOUND',
-      details: [{ field: 'id' }],
-    });
-  }
-
-  if (product.deleted) {
-    return { deleted: true, id, alreadyDeleted: true };
-  }
-
-  product.deleted = true;
-  product.deletedAt = new Date();
-  await product.save();
-
-  return { deleted: true, id };
-};
-
-export const restoreProductService = async (id: string) => {
-  const product = await Product.findById(id);
-
-  if (!product) {
-    throw new AppError(404, 'Product not found', {
-      code: 'PRODUCT_NOT_FOUND',
-      details: [{ field: 'id' }],
-    });
-  }
-
-  if (!product.deleted) {
-    return { id, restored: false, message: 'Product is not deleted' };
-  }
-
-  product.deleted = false;
-  product.deletedAt = null;
-  await product.save();
-
-  return { restored: true, id };
-};
-
-export const getDeletedProductService = async () => {
-  return await Product.find({ deleted: true }).sort({ deletedAT: -1 });
 };

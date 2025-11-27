@@ -24,10 +24,7 @@ const categorySchema = new Schema<ICategoryDoc>(
       type: String,
       default: '',
     },
-    imageUrl: {
-      type: String,
-      default: '',
-    },
+    image: { type: Schema.Types.ObjectId, ref: 'Image' },
     parentCategory: {
       type: Schema.Types.ObjectId,
       ref: 'Category',
