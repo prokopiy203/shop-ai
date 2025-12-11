@@ -1,6 +1,6 @@
 import { startServer } from './server';
-import { connectMainDB } from './config/db/db.main';
-import { connectAiDB } from './config/db/db.ai';
+import { connectMainDB } from './core/db/db.main';
+import { connectAiDB } from './core/db/db.ai';
 
 const bootstrap = async () => {
   await connectMainDB();

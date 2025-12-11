@@ -6,7 +6,7 @@ import cloudinary from '../src/config/cloudinary';
 type PresetOptions = {
   folder: string;
   resource?: 'image' | 'video' | 'raw';
-  transformation?: string | any[];
+  transformation?: any[];
   eager?: string[] | any[];
   format?: string;
 };
@@ -31,13 +31,9 @@ async function createPreset(name: string, options: PresetOptions) {
       name,
       folder: options.folder,
       resource_type: options.resource || 'image',
-
       type: 'upload',
-      unsigned: false,
-      use_filename: true,
-      unique_filename: true,
-      overwrite: false,
 
+      // Тільки transform та eager — без public_id логіки!
       transformation: options.transformation || '',
       eager: options.eager || [],
       format: options.format || undefined,
@@ -65,13 +61,28 @@ async function ensurePreset(name: string, options: PresetOptions) {
 async function setupCloudinaryPresets() {
   console.log('⏳ Setting up Cloudinary presets...\n');
 
+  /** -----------------------------
+   * PRODUCT IMAGE
+   * -----------------------------*/
   await ensurePreset('product_image', {
     folder: 'products/image',
     transformation: [{ crop: 'scale', width: 2000 }, { fetch_format: 'webp' }, { quality: 'auto' }],
-    eager: ['c_scale,w_600/f_webp/q_auto', 'c_scale,w_300/f_webp/q_auto'],
+    eager: [
+      // preview
+      'c_scale,w_600/f_webp/q_auto',
+      // thumbnail
+      'c_scale,w_300/f_webp/q_auto',
+      // mobile
+      'c_scale,w_480/f_webp/q_auto',
+      // retina
+      'c_scale,w_1200/f_webp/q_auto',
+    ],
     format: 'webp',
   });
 
+  /** -----------------------------
+   * PRODUCT VIDEO
+   * -----------------------------*/
   await ensurePreset('product_video', {
     folder: 'products/video',
     resource: 'video',
@@ -80,6 +91,9 @@ async function setupCloudinaryPresets() {
     format: 'mp4',
   });
 
+  /** -----------------------------
+   * CATEGORY IMAGE
+   * -----------------------------*/
   await ensurePreset('category_image', {
     folder: 'categories',
     transformation: [{ crop: 'scale', width: 1200 }, { fetch_format: 'webp' }, { quality: 'auto' }],
@@ -87,6 +101,9 @@ async function setupCloudinaryPresets() {
     format: 'webp',
   });
 
+  /** -----------------------------
+   * AVATAR IMAGE
+   * -----------------------------*/
   await ensurePreset('avatar_image', {
     folder: 'users/avatars',
     transformation: [
@@ -98,6 +115,9 @@ async function setupCloudinaryPresets() {
     format: 'webp',
   });
 
+  /** -----------------------------
+   * GALLERY IMAGE
+   * -----------------------------*/
   await ensurePreset('gallery_image', {
     folder: 'products/gallery',
     transformation: [{ crop: 'scale', width: 1600 }, { fetch_format: 'webp' }, { quality: 'auto' }],

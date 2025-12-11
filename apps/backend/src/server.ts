@@ -1,15 +1,16 @@
 import express from 'express';
 import cors from 'cors';
-import { getEnvVar } from './utils/getEnvVar';
-import { corsOptions } from './config/corsOptions';
+import { getEnvVar } from '@/core/utils/getEnvVar';
+import { corsOptions } from './core/config/corsOptions';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 import compression from 'compression';
 import morgan from 'morgan';
-import { isProd } from './config/environment';
-import { limiter } from './config/rateLimit';
-import { errorHandler } from './errors';
-import globalRoutes from './routes/globalRoute';
+import { isProd } from './core/config/environment';
+import { limiter } from './core/config/rateLimit';
+import { errorHandler } from './core/errors';
+import globalRoutes from './api/routes/globalRoute';
+import globalAdminRoutes from './admin/routes/globalAdminRoutes';
 
 const PORT = Number(getEnvVar('PORT', 4000));
 const COOKIE_SECRET = String(getEnvVar('COOKIE_SECRET'));
@@ -38,6 +39,7 @@ export const startServer = () => {
   app.use(compression());
 
   app.use('/api', globalRoutes);
+  app.use('/admin', globalAdminRoutes);
 
   app.use(errorHandler);
 
