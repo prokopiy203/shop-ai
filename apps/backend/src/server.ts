@@ -11,6 +11,7 @@ import { limiter } from './core/config/rateLimit';
 import { errorHandler } from './core/errors';
 import globalRoutes from './api/routes/globalRoute';
 import globalAdminRoutes from './admin/routes/globalAdminRoutes';
+import aiTest from './modules/ai/chat/ai.routes';
 
 const PORT = Number(getEnvVar('PORT', 4000));
 const COOKIE_SECRET = String(getEnvVar('COOKIE_SECRET'));
@@ -40,6 +41,7 @@ export const startServer = () => {
 
   app.use('/api', globalRoutes);
   app.use('/admin', globalAdminRoutes);
+  app.use('/ai', aiTest);
 
   app.use(errorHandler);
 

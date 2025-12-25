@@ -1,10 +1,12 @@
 import { Schema, model, models, type Model, type Document } from 'mongoose';
-import { User as UserCore, UserPreferences, UserRole } from '@shopai/types';
+import { User as UserCore, UserPreferences } from '@shop-ai/types';
 import bcrypt from 'bcrypt';
+import { Avatar } from '@shop-ai/types';
 
 export interface IUserDoc extends Document, Omit<UserCore, '_id' | 'createdAt' | 'updatedAt'> {
   _id: any;
   password: string;
+  avatar?: Avatar;
   comparePassword?(password: string): Promise<boolean>;
 }
 
@@ -13,6 +15,7 @@ const preferencesSchema = new Schema<UserPreferences>(
     theme: { type: String, enum: ['light', 'dark'], default: 'light' },
     language: { type: String, enum: ['uk', 'en'], default: 'uk' },
     aiVoice: { type: String, enum: ['female', 'male'], default: 'female' },
+    animationsEnabled: { type: Boolean, default: true },
   },
   { _id: false },
 );
@@ -26,7 +29,10 @@ const userSchema = new Schema<IUserDoc>(
       type: String,
       select: false,
     },
-    avatarUrl: String,
+    avatar: {
+      url: { type: String },
+      publicId: { type: String },
+    },
     role: { type: String, enum: ['user', 'admin'], default: 'user' },
     preferences: { type: preferencesSchema, default: {} },
     lastActiveAt: { type: Date, default: null },

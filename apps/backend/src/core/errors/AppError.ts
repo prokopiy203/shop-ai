@@ -1,5 +1,5 @@
 import { HttpError } from 'http-errors-enhanced';
-import type { ErrorMeta } from '@shopai/types';
+import type { ErrorMeta } from '@shop-ai/types';
 
 export class AppError extends HttpError {
   constructor(statusCode: number, message: string, meta?: ErrorMeta) {

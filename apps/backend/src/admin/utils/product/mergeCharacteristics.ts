@@ -1,4 +1,4 @@
-import { ICharacteristic } from '@shopai/types';
+import { ICharacteristic } from '@shop-ai/types';
 
 export const mergeCharacteristics = (
   existing: ICharacteristic[],

@@ -1,4 +1,4 @@
-import { ICharacteristic } from '@shopai/types';
+import { ICharacteristic } from '@shop-ai/types';
 
 export function normalizeCharacteristics(items?: ICharacteristic[]) {
   if (!Array.isArray(items)) return [];

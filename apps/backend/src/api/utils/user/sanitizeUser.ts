@@ -1,4 +1,4 @@
-import { UserResponse } from '@shopai/types';
+import { UserResponse } from '@shop-ai/types';
 
 export const sanitizeUser = (user: any, isAdmin: boolean = false): UserResponse | null => {
   if (!user) return null;

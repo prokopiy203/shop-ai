@@ -1,4 +1,4 @@
-import { Category as CategoryCore } from '@shopai/types';
+import { Category as CategoryCore } from '@shop-ai/types';
 import { Schema, models, model, type Document, type Model } from 'mongoose';
 
 export interface ICategoryDoc extends Document, Omit<CategoryCore, 'id'> {

@@ -1,5 +1,5 @@
 import { Schema, model, models, type Document, type Model } from 'mongoose';
-import type { WishlistItem } from '@shopai/types';
+import type { WishlistItem } from '@shop-ai/types';
 
 export interface IWishlistDoc extends Document, Omit<WishlistItem, '_id'> {
   userId: any;

@@ -1,7 +1,7 @@
 import { Category } from '@/api/models';
 import { AppError, ValidationError } from '@/core/errors';
 import { generateSlug } from '@/api/utils/product/generateSlug';
-import { CreateCategoryData, UpdateCategoryData } from '@shopai/types';
+import { CreateCategoryData, UpdateCategoryData } from '@shop-ai/types';
 
 export const createCategoryService = async (data: CreateCategoryData) => {
   const slug = generateSlug(data.name);

@@ -1,4 +1,4 @@
-import { TypeNotification } from '@shopai/types';
+import { TypeNotification } from '@shop-ai/types';
 import { Schema, models, model, type Document, type Model } from 'mongoose';
 
 export interface INotificationDoc extends Document {

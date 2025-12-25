@@ -2,7 +2,7 @@ import { User } from '@/api/models';
 import { sanitizeUser } from '@/api/utils/user/sanitizeUser';
 import { AppError } from '@/core/errors';
 import { signAccessToken } from '@/core/utils/JWT';
-import { LoginData } from '@shopai/types';
+import { LoginData } from '@shop-ai/types';
 import bcrypt from 'bcrypt';
 
 export const adminLoginService = async (data: LoginData) => {
@@ -20,14 +20,14 @@ export const adminLoginService = async (data: LoginData) => {
     throw new AppError(400, 'Invalid email pr password');
   }
 
-  const tokens = signAccessToken({
+  const accessToken = signAccessToken({
     _id: user._id,
     role: user.role,
   });
 
   return {
     user: sanitizeUser(user.toObject()),
-    tokens,
+    accessToken,
   };
 };
 

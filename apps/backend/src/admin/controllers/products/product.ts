@@ -5,7 +5,7 @@ import {
   getAdminProductsService,
   updateProductService,
 } from '@/admin/services/product/product';
-import type { CreateProductData, ApiSuccessResponse, UpdateProductData } from '@shopai/types';
+import type { CreateProductData, ApiSuccessResponse, UpdateProductData } from '@shop-ai/types';
 import { AppError } from '@/core/errors';
 
 export const getAdminProductsController = async (req: Request, res: Response) => {

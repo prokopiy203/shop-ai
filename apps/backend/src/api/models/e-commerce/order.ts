@@ -1,4 +1,4 @@
-import { OrderStatus, OrderItem } from '@shopai/types';
+import { OrderStatus, OrderItem } from '@shop-ai/types';
 import { Schema, model, models, type Document, type Model } from 'mongoose';
 
 export interface IOrder extends Document {

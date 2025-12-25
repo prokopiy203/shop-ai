@@ -4,12 +4,19 @@ import { Request, Response } from 'express';
 export const adminLoginController = async (req: Request, res: Response) => {
   const data = req.body;
 
-  const result = await adminLoginService(data);
+  const { user, accessToken } = await adminLoginService(data);
+
+  res.cookie('accessToken', accessToken, {
+    httpOnly: true,
+    sameSite: 'lax',
+    secure: false,
+    path: '/',
+  });
 
   res.status(200).json({
     success: true,
     message: 'Login in Successfully',
-    data: result,
+    data: user,
   });
 };
 

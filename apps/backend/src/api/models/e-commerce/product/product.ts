@@ -1,5 +1,5 @@
 import { Schema, model, models, type Model, type Document } from 'mongoose';
-import { ICharacteristic, Product as ProductCore } from '@shopai/types';
+import { ICharacteristic, Product as ProductCore } from '@shop-ai/types';
 import { characteristicSchema } from '@/api/models/e-commerce/product/characteristic';
 
 export interface IProductDoc extends Document, Omit<ProductCore, '_id'> {

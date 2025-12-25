@@ -1,7 +1,7 @@
 import { buildProductQuery } from '@/api/utils/product/buildProductQuery';
 import { Product } from '@/api/models';
 import { ValidationError } from '@/core/errors/AppError';
-import type { PaginationParams, ProductResponse } from '@shopai/types';
+import type { PaginationParams, ProductResponse } from '@shop-ai/types';
 import { HttpError } from 'http-errors-enhanced';
 
 export const getAllProductsService = async (

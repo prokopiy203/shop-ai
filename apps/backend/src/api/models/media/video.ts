@@ -1,4 +1,4 @@
-import { VideoCore } from '@shopai/types';
+import { VideoCore } from '@shop-ai/types';
 import { Schema, model, models, type Model, type Types, Document } from 'mongoose';
 
 export interface IVideoDoc extends Document, Omit<VideoCore, 'product'> {

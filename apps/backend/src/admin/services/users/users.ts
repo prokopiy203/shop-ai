@@ -1,6 +1,6 @@
 import { Address, Notification, User } from '@/api/models';
 import { AppError } from '@/core/errors';
-import { PaginationParams } from '@shopai/types';
+import { PaginationParams } from '@shop-ai/types';
 import { Types } from 'mongoose';
 import { getUserStats } from './helpers/getUserStats';
 import { buildUserDetailsDTO } from './helpers/buildUserDetailsDTO';

@@ -1,4 +1,4 @@
-import { UserPreferences } from '@shopai/types';
+import { UserPreferences } from '@shop-ai/types';
 
 export const buildUserDetailsDTO = (
   user: any,

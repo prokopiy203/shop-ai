@@ -2,7 +2,8 @@ import { User } from '@/api/models';
 import { AppError, ValidationError } from '@/core/errors';
 import { generateAuthTokens, verifyRefreshToken } from '@/core/utils/JWT';
 import { sanitizeUser } from '@/api/utils/user/sanitizeUser';
-import { LoginData, RegisterUserData } from '@shopai/types';
+import { LoginData, RegisterUserData } from '@shop-ai/types';
+import { Response } from 'express';
 
 export const registerService = async (data: RegisterUserData) => {
   const exists = await User.findOne({ email: data.email }).lean();
@@ -71,4 +72,20 @@ export const refreshService = async (token: string) => {
     role: payload.role,
     tokens,
   };
+};
+
+export const logoutService = (res: Response) => {
+  // access token
+  res.clearCookie('accessToken', {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production',
+  });
+
+  // refresh token
+  res.clearCookie('refreshToken', {
+    httpOnly: true,
+    sameSite: 'strict',
+    secure: process.env.NODE_ENV === 'production',
+  });
 };

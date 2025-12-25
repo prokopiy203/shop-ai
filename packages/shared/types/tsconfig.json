@@ -1,17 +1,20 @@
 {
-  "extends": "@repo/typescript-config/base.json",
+  "$schema": "https://json.schemastore.org/tsconfig",
   "compilerOptions": {
+    "composite": true,
+
     "declaration": true,
-    "declarationMap": true,
+    "emitDeclarationOnly": true,
+
+    "rootDir": "src",
     "outDir": "dist",
-    "rootDir": ".",
-    "module": "NodeNext",
+
+    "module": "ESNext",
     "moduleResolution": "NodeNext",
-    "target": "ES2022",
-    "lib": ["ES2022"],
-    "skipLibCheck": true,
-    "noEmit": true
+
+    "strict": true,
+    "skipLibCheck": true
   },
-  "include": ["./**/*.ts"],
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

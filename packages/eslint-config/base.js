@@ -12,7 +12,16 @@ import onlyWarn from "eslint-plugin-only-warn";
 export const config = [
   js.configs.recommended,
   eslintConfigPrettier,
-  ...tseslint.configs.recommended,
+  ...tseslint.configs.recommended.map((c) => ({
+    ...c,
+    languageOptions: {
+      ...c.languageOptions,
+      parserOptions: {
+        ...c.languageOptions?.parserOptions,
+        projectService: false, // ❗ КЛЮЧОВЕ
+      },
+    },
+  })),
   {
     plugins: {
       turbo: turboPlugin,

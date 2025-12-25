@@ -9,7 +9,6 @@ export const deleteFromCloudinary = async (publicId: string) => {
 
     console.log('DELETE RESULT 1:', res);
 
-    // Якщо Cloudinary каже "not found" → пробуємо AUTO
     if (res.result === 'not found') {
       const res2 = await cloudinary.uploader.destroy(publicId, {
         resource_type: 'auto',

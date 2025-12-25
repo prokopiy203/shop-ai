@@ -5,7 +5,7 @@ import {
   removeCategoryServices,
   updateCategoryService,
 } from '@/admin/services/category/category';
-import { CreateCategoryData, UpdateCategoryData } from '@shopai/types';
+import { CreateCategoryData, UpdateCategoryData } from '@shop-ai/types';
 import { Request, Response } from 'express';
 
 export const createCategoryController = async (

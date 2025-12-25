@@ -1,7 +1,7 @@
 import { Category } from '@/api/models';
 import { ValidationError } from '@/core/errors';
 import { generateSlug } from '@/api/utils/product/generateSlug';
-import { CreateCategoryData, UpdateCategoryData } from '@shopai/types';
+import { CreateCategoryData, UpdateCategoryData } from '@shop-ai/types';
 
 export const getAllCategoriesServices = async (filter: Record<string, any>) => {
   const categories = await Category.find(filter);

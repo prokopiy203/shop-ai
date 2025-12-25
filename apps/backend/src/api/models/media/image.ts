@@ -1,4 +1,4 @@
-import { IImage } from '@shopai/types';
+import { IImage } from '@shop-ai/types';
 import { Schema, model, models, Model } from 'mongoose';
 
 const imageSchema = new Schema<IImage>(

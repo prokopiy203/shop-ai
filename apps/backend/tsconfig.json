@@ -1,30 +1,30 @@
 {
   "extends": "@repo/typescript-config/base.json",
   "compilerOptions": {
-    /* ===== Основне ===== */
-    "target": "ES2020", // сучасний синтаксис, підтримується Node 18+
-    "module": "CommonJS", // для Express / Node
-    "rootDir": "src", // вихідна директорія з усім кодом
-    "outDir": "dist", // компільований код
-    "moduleResolution": "node",
-    "esModuleInterop": true, // дозволяє import з CommonJS
-    "resolveJsonModule": true, // можна імпортувати .json файли
-    "baseUrl": "./src", // базова точка для alias
+    "target": "ES2022",
+
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+
+    "rootDir": "src",
+    "outDir": "dist",
+
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["*"], // імпорти типу "@/controllers/auth"
-      "@shopai/types": ["../../packages/shared/types"]
+      "@/*": ["*"],
+      "@shop-ai/types": ["../../packages/shared/types/index.ts"]
     },
 
-    /* ===== Перевірки якості ===== */
-    "strict": true, // вмикає всі строгі перевірки
-    "noImplicitAny": true, // не дозволяє неявний any
-    "forceConsistentCasingInFileNames": true,
+    "strict": true,
     "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
 
-    /* ===== Інше ===== */
-    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "resolveJsonModule": true,
+
     "isolatedModules": false
   },
-  "include": ["src/**/*.ts", "src/**/*.d.ts"],
+
+  "include": ["src"],
   "exclude": ["node_modules", "dist"]
 }

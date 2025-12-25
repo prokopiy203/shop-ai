@@ -1,6 +1,6 @@
 import { Category, Product } from '@/api/models';
 import { AppError, ValidationError } from '@/core/errors/AppError';
-import type { CreateProductData, UpdateProductData } from '@shopai/types';
+import type { CreateProductData, UpdateProductData } from '@shop-ai/types';
 import { generateSlug } from '@/api/utils/product/generateSlug';
 import { generateTextEmbedding } from '@/modules/ai/vector-engine/text/generateTextEmbedding';
 import { updateProductVector } from '@/modules/ai/vector-engine';

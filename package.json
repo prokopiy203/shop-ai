@@ -9,6 +9,7 @@
     "check-types": "turbo run check-types"
   },
   "devDependencies": {
+    "@types/express-rate-limit": "^5.1.3",
     "prettier": "^3.6.2",
     "turbo": "^2.5.8",
     "typescript": "5.9.2"
@@ -22,6 +23,7 @@
     "packages/*"
   ],
   "dependencies": {
+    "express-rate-limit": "^8.2.1",
     "openai": "^6.9.1",
     "zod": "^4.1.12"
   }
