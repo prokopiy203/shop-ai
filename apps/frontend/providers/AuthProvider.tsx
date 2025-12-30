@@ -16,15 +16,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     if (!isFetched) return;
 
     if (!user) {
-      router.replace("/");
+      router.replace("/login");
       return;
     }
 
     setTheme(user.preferences.theme);
     setAnimationsEnabled(!!user.preferences.animationsEnabled);
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isFetched, user]);
+  }, [isFetched, user, router, setTheme, setAnimationsEnabled]);
 
   if (!isFetched) {
     return null;

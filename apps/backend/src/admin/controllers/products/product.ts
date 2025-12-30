@@ -53,6 +53,7 @@ export const updateProductController = async (
   const updateProduct = await updateProductService(id, req.body);
 
   res.status(200).json({
+    success: true,
     message: 'Product update successfully!',
     data: updateProduct,
   });
@@ -71,6 +72,7 @@ export const deleteProductController = async (req: Request<{ id: string }>, res:
   const result = await deletedProductService(id);
 
   res.status(200).json({
+    success: true,
     message: 'Product successfully deleted!',
     data: result,
   });

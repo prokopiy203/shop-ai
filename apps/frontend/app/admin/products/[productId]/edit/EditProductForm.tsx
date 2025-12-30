@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useParams } from "next/navigation";
 import { ProductBase } from "@shop-ai/types";
@@ -12,9 +12,9 @@ import { useAutoSaveDraft } from "@/hooks/useAutoSaveDraft";
 import { ProductTabs } from "../sections/ProductsTabs";
 import { MobileSaveBar } from "../sections/MobileSaveBar";
 import ProductSidebar from "../sections/Sidebar/ProductSidebar";
-import { Label } from "@radix-ui/react-label";
-import { Input } from "@/components/ui/input";
 import { EditableProductTitle } from "../sections/EditableProductTitle";
+import { useBreadcrumbLabels } from "@/store/breadcrumb-labels";
+import { useEditProductForm } from "../_queries/useEditProductForm";
 
 export type ProductFormValues = ProductBase;
 
@@ -23,20 +23,35 @@ export default function EditProductForm() {
   const productId = params.productId;
 
   const { data: product, isLoading, isError } = useAdminProductById(productId);
-
+  const setLabel = useBreadcrumbLabels((s) => s.setLabel);
+  const { save, isSaving } = useEditProductForm(productId);
+  const draft = useProductsDraftStore((s) => s.draft);
   const saveDraft = useProductsDraftStore((s) => s.saveDraft);
-
+  const isInitializedRef = useRef(false);
   const methods = useForm<ProductFormValues>();
 
   const { handleSubmit, reset } = methods;
 
-  // ⬇️ ініціалізація форми при завантаженні продукту
   useEffect(() => {
-    console.log("RESET FORM");
-    if (product) {
-      reset(product);
-    }
-  }, [product, reset]);
+    if (!product) return;
+    if (isInitializedRef.current) return;
+
+    const initialValues = {
+      ...product,
+      ...(draft ?? {}),
+    };
+
+    Object.entries(initialValues).forEach(([key, value]) => {
+      methods.setValue(key as keyof ProductFormValues, value, {
+        shouldDirty: false,
+        shouldTouch: false,
+        shouldValidate: false,
+      });
+    });
+
+    setLabel(productId, product.title);
+    isInitializedRef.current = true;
+  }, [productId, product, draft, methods, setLabel]);
 
   // ⬇️ autosave draft (debounced, стабільно)
   useAutoSaveDraft<ProductFormValues>({
@@ -48,7 +63,12 @@ export default function EditProductForm() {
   });
 
   const onSubmit = (data: ProductFormValues) => {
-    console.log("SAVE TO API", data);
+    const payload = {
+      description: data.description,
+      asActive: data.isActive,
+    };
+
+    save(payload);
     // TODO: mutation
   };
 
@@ -74,7 +94,7 @@ export default function EditProductForm() {
         "
         >
           {/* LEFT COLUMN */}
-          <div className="space-y-6">
+          <div className="space-y-4 md:space-y-6">
             {/* TITLE */}
             <EditableProductTitle />
 
@@ -84,7 +104,7 @@ export default function EditProductForm() {
 
           {/* RIGHT SIDEBAR */}
 
-          <ProductSidebar />
+          <ProductSidebar isSaving={isSaving} />
         </div>
 
         {/* MOBILE SAVE BAR */}

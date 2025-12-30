@@ -17,7 +17,7 @@ export function ProductTabs() {
           <TabsTrigger value="ai">AI Tools</TabsTrigger>
         </TabsList>
 
-        <TabsContent value="general" className="space-y-6">
+        <TabsContent value="general" className="space-y-4 md:space-y-6">
           <ProductMainInfo />
         </TabsContent>
 

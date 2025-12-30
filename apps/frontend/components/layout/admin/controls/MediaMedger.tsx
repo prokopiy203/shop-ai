@@ -179,6 +179,7 @@ export function MediaManager({
         <Button
           size="sm"
           variant="outline"
+          className="w-full"
           disabled={isUploading}
           onClick={() => inputRef.current?.click()}
         >

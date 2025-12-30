@@ -1,14 +1,34 @@
+import { useFormContext } from "react-hook-form";
 import { ProductStatus } from "./ProductStatus";
+import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import { Loader2 } from "lucide-react";
 
-export default function ProductSidebar() {
+type Props = {
+  isSaving: boolean;
+};
+
+export default function ProductSidebar({ isSaving }: Props) {
+  const {
+    formState: { isDirty },
+  } = useFormContext();
+
   return (
-    <div>
+    <Card className="p-2 md:p-4 flex flex-col justify-between ">
       {/* SIDEBAR */}
-      <aside className="space-y-4">
+      <aside className="flex flex-col gap-3 ">
         <ProductStatus />
         {/* <ProductTags />
                     <ProductAITools /> */}
       </aside>
-    </div>
+      <Button
+        type="submit"
+        disabled={!isDirty || isSaving}
+        className="w-full gap-2"
+      >
+        {isSaving && <Loader2 className="h-4 w-4 animate-spin" />}
+        {isSaving ? "Saving..." : "Save changes"}
+      </Button>
+    </Card>
   );
 }

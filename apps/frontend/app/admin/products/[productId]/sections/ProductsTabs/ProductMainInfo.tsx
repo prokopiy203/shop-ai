@@ -53,10 +53,10 @@ export function ProductMainInfo() {
     : undefined;
 
   return (
-    <Card className="p-4 space-y-6">
+    <Card className="p-2 md:p-4 lg:p-2 space-y-2 md:space-y-4 shadow-none">
       <h2 className="text-lg font-semibold">Main Info</h2>
 
-      <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[40%_1fr] gap-3">
         {/* MAIN IMAGE */}
         <MediaManager
           mode="single"
@@ -66,7 +66,7 @@ export function ProductMainInfo() {
         />
 
         {/* DESCRIPTION */}
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <Label>Description</Label>
 
           <Controller
@@ -75,7 +75,7 @@ export function ProductMainInfo() {
             render={({ field }) => (
               <Textarea
                 {...field}
-                rows={8}
+                rows={10}
                 placeholder="Product description..."
                 className="
                   bg-muted
@@ -83,7 +83,7 @@ export function ProductMainInfo() {
                   shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]
                   focus-visible:ring-1
                   focus-visible:ring-ring
-                  resize-y
+                  resize-none
                 "
               />
             )}

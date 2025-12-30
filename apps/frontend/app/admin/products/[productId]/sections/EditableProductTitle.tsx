@@ -26,7 +26,9 @@ export function EditableProductTitle() {
       <div className="flex items-center gap-2 flex-1 min-w-0">
         {!isEditing ? (
           <>
-            <h1 className="text-2xl font-semibold leading-none">{title}</h1>
+            <h1 className="text-xl md:text-2xl font-semibold leading-tight">
+              {title}
+            </h1>
 
             <Button
               type="button"
@@ -43,7 +45,7 @@ export function EditableProductTitle() {
             onBlur={() => setIsEditing(false)}
             className="
               h-10
-              text-2xl
+              text-xl md:text-2xl
               flex-1
               font-semibold
               px-1
@@ -56,7 +58,9 @@ export function EditableProductTitle() {
 
       {/* RIGHT: PRICE (ЗАВЖДИ Є) */}
       <div>
-        <span className="text-2xl font-semibold leading-none">${price}</span>
+        <span className="text-xl md:text-2xl font-semibold leading-none">
+          ${price}
+        </span>
       </div>
     </div>
   );

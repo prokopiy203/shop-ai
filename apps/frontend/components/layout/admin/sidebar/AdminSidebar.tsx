@@ -22,19 +22,6 @@ export default function AdminSidebar() {
         text-sidebar-foreground
        shadow-lg"
     >
-      {/* <aside
-      className="
-      hidden md:block
-      w-64
-      rounded-xl
-        border-b
-        border-r
-        border-sidebar-border/90
-        bg-sidebar/90
-        text-sidebar-foreground
-       shadow-lg
-    "
-    > */}
       <SidebarHeader>
         <AdminUserMenu />
       </SidebarHeader>
@@ -45,7 +32,6 @@ export default function AdminSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
-      {/* </aside> */}
     </Sidebar>
   );
 }
