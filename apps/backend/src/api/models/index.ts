@@ -25,3 +25,5 @@ export * from './analytics/event';
 // Media
 export * from './media/image';
 export * from './media/video';
+
+// Store

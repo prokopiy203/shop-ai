@@ -159,6 +159,7 @@ export function MediaManager({
 
         {item?.id && onRemove && !isUploading && (
           <button
+            type="button"
             onClick={() => onRemove(item.id)}
             className="absolute top-1 right-1 rounded bg-black/60 px-2 py-0.5 text-xs text-white"
           >
@@ -181,7 +182,11 @@ export function MediaManager({
           variant="outline"
           className="w-full"
           disabled={isUploading}
-          onClick={() => inputRef.current?.click()}
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            inputRef.current?.click();
+          }}
         >
           {isUploading ? "Uploading..." : "Change media"}
         </Button>
@@ -191,6 +196,7 @@ export function MediaManager({
           type="file"
           hidden
           accept={accept}
+          onClick={(e) => e.stopPropagation()}
           onChange={(e) => {
             const file = e.target.files?.[0];
             if (file) handleFile(file);

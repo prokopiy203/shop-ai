@@ -15,11 +15,11 @@ export default function AdminUserMenu() {
   const isCollapsed = state === "collapsed";
 
   return (
-    <SidebarMenu>
+    <SidebarMenu className="p-0">
       <SidebarMenuItem
         className="
           relative
-          h-12
+          h-10
           px-2
           flex
           items-center

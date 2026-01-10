@@ -13,7 +13,7 @@ export interface ProductBase {
   stock?: number;
   tags?: string[];
   isActive: boolean;
-  images: IImage[];
+  image: IImage | null;
   gallery?: any[];
   videos?: string[];
   characteristics?: ICharacteristic[];

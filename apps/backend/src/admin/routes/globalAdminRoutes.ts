@@ -7,6 +7,7 @@ import reviewRoutes from './review';
 import usersAdminRouter from './users/users';
 import cartRoutes from './cart';
 import authRoutes from './auth/auth';
+import settingRouter from './settings';
 import { authMiddleware } from '@/core/middlewares/authMiddleware';
 import { isAdmin } from '@/core/middlewares/isAdmin';
 
@@ -23,5 +24,6 @@ router.use('/cart', cartRoutes);
 router.use('/products', productAdminRoutes);
 router.use('/reviews', reviewRoutes);
 router.use('/users', usersAdminRouter);
+router.use('/settings', settingRouter);
 
 export default router;

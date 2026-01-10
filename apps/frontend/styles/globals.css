@@ -180,3 +180,34 @@ button:not(:disabled) {
     @apply bg-background text-foreground;
   }
 }
+
+.scroll-safe {
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  background-clip: padding-box;
+}
+
+.scroll-area::-webkit-scrollbar {
+  width: 6px;
+}
+
+.scroll-area::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.scroll-area::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.25);
+  border-radius: 9999px;
+}
+
+/* Remove number input arrows (Chrome, Edge, Safari) */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Remove number input arrows (Firefox) */
+input[type="number"] {
+  -moz-appearance: textfield;
+}

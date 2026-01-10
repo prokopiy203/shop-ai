@@ -1,5 +1,5 @@
-import { ApiResponse, ProductBase, UpdateProductData } from "@shop-ai/types";
-import { apiClient, ApiSuccessResponse } from "../api-client";
+import { apiClient } from "@/lib/api-client";
+import { ProductBase, UpdateProductData } from "@shop-ai/types";
 
 export type ProductImage = {
   _id: string;
@@ -12,7 +12,7 @@ export type AdminProduct = {
   title: string;
   sku: string;
   price: number;
-  images: ProductImage[];
+  image: ProductImage | null;
   category: {
     _id: string;
     name: string;
@@ -57,7 +57,6 @@ export const getAdminProductById = async (id: string): Promise<ProductBase> => {
   const product = await apiClient<ProductBase>(`/api/products/${id}`, {
     method: "GET",
   });
-  console.log("BY ID", product);
 
   return product;
 };

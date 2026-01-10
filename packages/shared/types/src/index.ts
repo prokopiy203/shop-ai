@@ -33,3 +33,7 @@ export * from "./upload";
 export * from "./characteristics";
 
 export * from "./wishlist";
+
+export * from "./ai";
+
+export * from "./settings";

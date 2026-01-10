@@ -1,4 +1,4 @@
-import { getAdminProducts } from "@/lib/api/products";
+import { getAdminProducts } from "@/lib/api/product/products";
 import { useQuery } from "@tanstack/react-query";
 
 export const useAdminProducts = (params: {

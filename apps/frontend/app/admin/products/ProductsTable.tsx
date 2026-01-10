@@ -82,9 +82,9 @@ export function ProductsTable() {
                   </TableCell>
                   <TableCell>
                     <div className="flex justify-center items-center">
-                      {p.images?.[0]?.thumbnail ? (
+                      {p.image?.thumbnail ? (
                         <img
-                          src={p.images[0].thumbnail}
+                          src={p.image.thumbnail}
                           alt={p.title}
                           className="h-10 w-10 rounded-md object-cover border"
                         />

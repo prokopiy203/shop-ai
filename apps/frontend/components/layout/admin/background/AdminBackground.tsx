@@ -27,7 +27,7 @@ export default function AdminBackground() {
       /> */}
       <LiquidEther
         className="absolute inset-0"
-        resolution={0.6} // 🔥 ВАЖЛИВО
+        resolution={0.35} // 🔥 ВАЖЛИВО
         mouseForce={12}
         cursorSize={90}
         autoDemo

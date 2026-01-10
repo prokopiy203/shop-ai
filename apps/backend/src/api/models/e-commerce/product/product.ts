@@ -21,7 +21,11 @@ const productSchema = new Schema<IProductDoc>(
     sku: { type: String, required: true, unique: true, trim: true, uppercase: true },
     brand: { type: String, required: true, trim: true },
     price: { type: Number, required: true },
-    images: [{ type: Schema.Types.ObjectId, ref: 'Image' }],
+    image: {
+      type: Schema.Types.ObjectId,
+      ref: 'Image',
+      default: null,
+    },
     gallery: {
       type: [
         {

@@ -1,14 +1,11 @@
 "use client";
 
-import { uploadAdminProductImage } from "@/lib/api/media";
-import { useEffect, useRef, useState } from "react";
+import { useUploadProductImage } from "@/app/admin/products/[productId]/_queries/useUploadMediaImages";
+import { useEffect, useRef } from "react";
 import { toast } from "sonner";
 
 /**
- * Smart progress simulation:
- * - швидко доходить до ~60%
- * - повільно до ~88%
- * - 100% тільки після реального success
+ * Smart progress simulation
  */
 function simulateProgress(
   onProgress: (p: number) => void,
@@ -25,9 +22,8 @@ function simulateProgress(
   const timer = setInterval(() => {
     if (progress >= cap) return;
 
-    const increment = progress < 60 ? Math.random() * 10 : Math.random() * 3;
-
-    progress = Math.min(progress + increment, cap);
+    const inc = progress < 60 ? Math.random() * 10 : Math.random() * 3;
+    progress = Math.min(progress + inc, cap);
     onProgress(Math.round(progress));
   }, interval);
 
@@ -43,10 +39,7 @@ function simulateProgress(
 }
 
 export function useAdminProductMedia(productId: string) {
-  const [isUploading, setIsUploading] = useState(false);
-  const [error, setError] = useState<null | { code: string; message?: string }>(
-    null
-  );
+  const uploadImageMutation = useUploadProductImage(productId);
 
   const isMountedRef = useRef(true);
   const isUploadingRef = useRef(false);
@@ -62,65 +55,39 @@ export function useAdminProductMedia(productId: string) {
     onProgress?: (percent: number) => void
   ) => {
     if (!file) return null;
-
-    // ⛔️ захист від повторного upload
-    if (isUploadingRef.current) {
-      return null;
-    }
+    if (isUploadingRef.current) return null;
 
     let simulator: ReturnType<typeof simulateProgress> | null = null;
 
     try {
       isUploadingRef.current = true;
-      setError(null);
 
-      if (isMountedRef.current) {
-        setIsUploading(true);
-      }
-
-      // ▶️ старт імітації %
       if (onProgress) {
         simulator = simulateProgress(onProgress);
       }
 
-      const image = await uploadAdminProductImage(productId, file);
+      const image = await uploadImageMutation.mutateAsync(file);
 
-      // ✅ реальний success → 100%
       simulator?.finish();
-
-      if (isMountedRef.current) {
-        toast.success("Image uploaded successfully");
-      }
+      toast.success("Image uploaded successfully");
 
       return image;
     } catch (e: any) {
       simulator?.stop();
 
-      if (isMountedRef.current) {
-        toast.error("Failed to upload image", {
-          description: e?.message ?? "Something went wrong while uploading",
-        });
-
-        setError({
-          code: "UPLOAD_FAILED",
-          message: e?.message,
-        });
-      }
+      toast.error("Failed to upload image", {
+        description: e?.message ?? "Upload error",
+      });
 
       throw e;
     } finally {
       isUploadingRef.current = false;
-
-      if (isMountedRef.current) {
-        setIsUploading(false);
-      }
     }
   };
 
   return {
     uploadImage,
-    isUploading,
-    error,
-    resetError: () => setError(null),
+    isUploading: uploadImageMutation.isPending,
+    error: uploadImageMutation.error,
   };
 }

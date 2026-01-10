@@ -40,7 +40,7 @@ export interface PaginationParams {
   page?: number;
   limit?: number;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
 }
 
 /**
@@ -69,3 +69,6 @@ export interface Timestamps {
   updatedAt: string;
 }
 
+export type DeepPartial<T> = {
+  [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K];
+};

@@ -25,9 +25,9 @@ export const getAdminProductsService = async (
 
   const [products, total] = await Promise.all([
     Product.find(mongoQuery)
-      .select('title sku price stock images category isActive createdAt')
+      .select('title sku price stock image category isActive createdAt')
       .populate({
-        path: 'images',
+        path: 'image',
         select: 'thumbnail thumbnail2x',
         options: { limit: 1 },
       })
@@ -97,7 +97,7 @@ export const createProductService = async (data: CreateProductData) => {
     characteristics: normalizedCharacteristic,
     textVector,
     vector: [],
-    images: [],
+    image: null,
     gallery: [],
     videos: [],
   });
@@ -107,7 +107,7 @@ export const createProductService = async (data: CreateProductData) => {
 
 export const updateProductService = async (id: string, data: UpdateProductData) => {
   const existing = await Product.findById(id).select(
-    'title description tags textVector vector images _id brand characteristics',
+    'title description tags textVector vector image _id brand characteristics',
   );
 
   if (!existing) {

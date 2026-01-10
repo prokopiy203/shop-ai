@@ -1,47 +1,38 @@
 "use client";
 
-import { useFormContext, Controller, useWatch } from "react-hook-form";
+import { useFormContext, Controller } from "react-hook-form";
 import { Card } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useParams } from "next/navigation";
 import { useAdminProductMedia } from "@/hooks/media/useAdminProductMedia";
 import { MediaManager } from "@/components/layout/admin/controls/MediaMedger";
+import { useAdminProductById } from "../../_queries/useAdminProductsById";
+import { Loader2, Sparkles } from "lucide-react";
+import { GenerateDescriptionButton } from "../../edit/_components/GenerateDescription";
 
 export function ProductMainInfo() {
-  const { control, setValue } = useFormContext();
-  const params = useParams<{ productId: string }>();
-  const productId = params.productId;
+  const { control } = useFormContext();
+  const { productId } = useParams<{ productId: string }>();
 
+  const { data: product } = useAdminProductById(productId);
   const { uploadImage } = useAdminProductMedia(productId);
 
-  const images = useWatch({ name: "images" });
-  const mainImage = images?.[0];
+  // ✅ source of truth — product
+  const images = product?.image ?? null;
+  const mainImage = images;
 
-  /**
-   * Upload handler для MediaManager
-   * MediaManager сам керує loader / progress
-   */
   async function handleUpload(
     file: File,
     onProgress?: (percent: number) => void
   ) {
-    const uploadedImage = await uploadImage(file, onProgress);
-    if (!uploadedImage) return;
-
-    setValue("images", [uploadedImage, ...(images || [])], {
-      shouldDirty: true,
-      shouldTouch: true,
-    });
+    await uploadImage(file, onProgress);
+    // 🔥 UI оновиться через query cache
   }
 
-  /**
-   * 🔐 SAFE value для MediaManager
-   * або валідний MediaItem, або undefined
-   */
   const mediaValue = mainImage
     ? {
-        id: mainImage._id,
+        id: mainImage.publicId,
         src: {
           mobile: mainImage.mobile,
           original: mainImage.original,
@@ -57,7 +48,6 @@ export function ProductMainInfo() {
       <h2 className="text-lg font-semibold">Main Info</h2>
 
       <div className="grid grid-cols-1 lg:grid-cols-[40%_1fr] gap-3">
-        {/* MAIN IMAGE */}
         <MediaManager
           mode="single"
           aspect="square"
@@ -65,28 +55,36 @@ export function ProductMainInfo() {
           onUpload={handleUpload}
         />
 
-        {/* DESCRIPTION */}
         <div className="flex flex-col gap-2">
           <Label>Description</Label>
 
           <Controller
             name="description"
             control={control}
-            render={({ field }) => (
-              <Textarea
-                {...field}
-                rows={10}
-                placeholder="Product description..."
-                className="
-                  bg-muted
-                  border-border
-                  shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]
-                  focus-visible:ring-1
-                  focus-visible:ring-ring
-                  resize-none
-                "
-              />
-            )}
+            render={({ field }) => {
+              const isLoading = false; // 🔜 replace with mutation.isPending
+
+              return (
+                <div className="relative">
+                  <Textarea
+                    {...field}
+                    rows={10}
+                    placeholder="Product description..."
+                    className="
+      scroll-area
+      bg-muted
+      border-border
+      shadow-[inset_0_1px_2px_rgba(0,0,0,0.06)]
+      focus-visible:ring-1
+      focus-visible:ring-ring
+      pr-12
+    "
+                  />
+
+                  <GenerateDescriptionButton />
+                </div>
+              );
+            }}
           />
         </div>
       </div>

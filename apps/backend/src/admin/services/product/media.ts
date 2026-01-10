@@ -14,11 +14,27 @@ export const addProductImageService = async (id: string, file: Express.Multer.Fi
     throw new ValidationError('Image file is required');
   }
 
-  const product = await Product.findById(id).select('title textVector vector images');
+  // 1️⃣ Отримуємо продукт з поточним image
+  const product = await Product.findById(id).select('title textVector vector image');
+
   if (!product) {
     throw new ValidationError('Product not found');
   }
 
+  // 2️⃣ Якщо фото вже було — ВИДАЛЯЄМО ЙОГО (cleanup)
+  if (product.image) {
+    const oldImage = await Image.findById(product.image);
+
+    if (oldImage) {
+      // видалення файлу з Cloudinary
+      await deleteFromCloudinary(oldImage.publicId);
+
+      // видалення документа Image
+      await oldImage.deleteOne();
+    }
+  }
+
+  // 3️⃣ Завантажуємо нове фото
   const uploaded: any = await uploadToCloudinary({
     buffer: file.buffer,
     type: 'image',
@@ -31,7 +47,7 @@ export const addProductImageService = async (id: string, file: Express.Multer.Fi
   );
 
   const alt =
-    visionDescription?.length > 0 ? visionDescription : `${product.title} - product Image`;
+    visionDescription?.length > 0 ? visionDescription : `${product.title} - product image`;
 
   const imageDoc = await Image.create({
     ...formatted,
@@ -41,11 +57,13 @@ export const addProductImageService = async (id: string, file: Express.Multer.Fi
     related: [{ ref: 'Product', id }],
   });
 
+  // 4️⃣ Перезаписуємо головне фото
   await Product.findByIdAndUpdate(id, {
-    $push: { images: imageDoc._id },
+    image: imageDoc._id,
   });
 
-  if (product.images.length === 0) {
+  // 5️⃣ Якщо це ПЕРШЕ фото — оновлюємо вектор продукту
+  if (!product.image) {
     const finalVector = mergeVectors(product.textVector, imageVector);
 
     await Product.findByIdAndUpdate(id, {
@@ -205,10 +223,13 @@ export const deleteProductImageService = async (id: string) => {
     throw new ValidationError('Image not found');
   }
 
+  // 1️⃣ Видаляємо файл з Cloudinary
   await deleteFromCloudinary(image.publicId);
 
-  await Product.updateMany({ images: image._id }, { $pull: { images: image._id } });
+  // 2️⃣ Обнуляємо image у всіх продуктах, де воно використовується
+  await Product.updateMany({ image: image._id }, { $set: { image: null } });
 
+  // 3️⃣ Видаляємо Image-документ
   await Image.findByIdAndDelete(image._id);
 
   return true;

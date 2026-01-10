@@ -3,7 +3,6 @@
 import { useEffect, useRef } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { useParams } from "next/navigation";
-import { ProductBase } from "@shop-ai/types";
 import { useAdminProductById } from "../_queries/useAdminProductsById";
 import { useProductsDraftStore } from "../_store/products";
 import { ProductsErrorState } from "../../_components/ProductsErrorState";
@@ -15,8 +14,8 @@ import ProductSidebar from "../sections/Sidebar/ProductSidebar";
 import { EditableProductTitle } from "../sections/EditableProductTitle";
 import { useBreadcrumbLabels } from "@/store/breadcrumb-labels";
 import { useEditProductForm } from "../_queries/useEditProductForm";
-
-export type ProductFormValues = ProductBase;
+import { ProductFormValues } from "../types/product-form";
+import { mapProductToForm } from "../lib/mapProductToForm";
 
 export default function EditProductForm() {
   const params = useParams<{ productId: string }>();
@@ -33,30 +32,19 @@ export default function EditProductForm() {
   const { handleSubmit, reset } = methods;
 
   useEffect(() => {
-    if (!product) return;
-    if (isInitializedRef.current) return;
+    if (!product || isInitializedRef.current) return;
 
-    const initialValues = {
-      ...product,
+    reset({
+      ...mapProductToForm(product),
       ...(draft ?? {}),
-    };
-
-    Object.entries(initialValues).forEach(([key, value]) => {
-      methods.setValue(key as keyof ProductFormValues, value, {
-        shouldDirty: false,
-        shouldTouch: false,
-        shouldValidate: false,
-      });
     });
-
     setLabel(productId, product.title);
-    isInitializedRef.current = true;
-  }, [productId, product, draft, methods, setLabel]);
 
-  // ⬇️ autosave draft (debounced, стабільно)
+    isInitializedRef.current = true;
+  }, [product, productId, reset, draft, setLabel]);
+
   useAutoSaveDraft<ProductFormValues>({
     productId,
-    product,
     control: methods.control,
     isDirty: methods.formState.isDirty,
     saveDraft,
@@ -64,8 +52,12 @@ export default function EditProductForm() {
 
   const onSubmit = (data: ProductFormValues) => {
     const payload = {
+      title: data.title,
       description: data.description,
-      asActive: data.isActive,
+      isActive: data.isActive,
+      price: data.price,
+      stock: data.stock,
+      tags: data.tags,
     };
 
     save(payload);
@@ -77,7 +69,7 @@ export default function EditProductForm() {
 
   return (
     <FormProvider {...methods}>
-      <form onSubmit={handleSubmit(onSubmit)} className="p-4">
+      <form onSubmit={handleSubmit(onSubmit)} className="p-3">
         {/* MAIN LAYOUT */}
         <div
           className="grid grid-cols-1
@@ -90,7 +82,7 @@ export default function EditProductForm() {
 
     /* wide desktop (optional) */
     2xl:grid-cols-[minmax(0,1fr)_320px]
-          gap-6
+          gap-5
         "
         >
           {/* LEFT COLUMN */}

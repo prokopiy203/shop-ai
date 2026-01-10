@@ -25,7 +25,7 @@ export const getAllProductsService = async (
         select: 'name slug',
       })
       .populate({
-        path: 'images',
+        path: 'image',
         select: 'thumbnail thumbnail2x',
       })
       .skip(skip)
@@ -49,7 +49,7 @@ export const getAllProductsService = async (
 export const getProductByIdService = async (id: string) => {
   const product = await Product.findById(id)
     .select('-createdAt -updatedAt')
-    .populate('images')
+    .populate('image')
     .populate('videos', 'publicId url poster duration width height alt title ratio')
     .populate('category', 'name slug')
     .exec();

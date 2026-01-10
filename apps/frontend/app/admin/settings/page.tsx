@@ -4,6 +4,8 @@ import { Card } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { useDebouncedUserPreferences } from "@/hooks/useDebounceUserPreferences";
 import { useAdminUIStore } from "@/store/admin-ui";
+import { GeneralSettings } from "./_components/GeneralSettings";
+import { ProductDescriptionSettings } from "./_components/ProductDescriptionSettings";
 
 function AdminSettingsPage() {
   const state = useAdminUIStore();
@@ -14,7 +16,7 @@ function AdminSettingsPage() {
   });
 
   return (
-    <Card className="p-4 bg-sidebar shadow-md rounded-xl">
+    <Card className="p-4 bg-sidebar shadow-md rounded-xl flex flex-col gap-5">
       <div className="max-w-7xl  space-y-6">
         <div className="flex items-center justify-between">
           <div>
@@ -30,6 +32,8 @@ function AdminSettingsPage() {
           />
         </div>
       </div>
+      <GeneralSettings />
+      <ProductDescriptionSettings />
     </Card>
   );
 }

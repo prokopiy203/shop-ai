@@ -1,12 +1,12 @@
-import { Product } from "@shop-ai/types";
 import { create } from "zustand";
+import { ProductFormValues } from "../types/product-form";
 
 type ProductDraftState = {
   productId: string | null;
-  draft: Partial<Product> | null;
+  draft: Partial<ProductFormValues> | null;
   updatedAt: number | null;
 
-  saveDraft: (productId: string, data: Partial<Product>) => void;
+  saveDraft: (productId: string, data: Partial<ProductFormValues>) => void;
   clearDraft: () => void;
 };
 

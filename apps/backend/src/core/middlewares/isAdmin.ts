@@ -1,7 +1,6 @@
-import { Response, NextFunction } from 'express';
-import { AuthRequest } from './authMiddleware';
+import { Response, NextFunction, Request } from 'express';
 
-export const isAdmin = (req: AuthRequest, res: Response, next: NextFunction) => {
+export const isAdmin = (req: Request, res: Response, next: NextFunction) => {
   const user = req.user;
 
   if (!user) {
